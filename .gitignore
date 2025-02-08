@@ -10,6 +10,8 @@ dmypy.json
 .vscode/
 *.code-workspace
 
+*.docx
+
 venv
 copybook
 __sprint
