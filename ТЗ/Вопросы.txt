@@ -1,8 +1,8 @@
 1. Разрабатывается Telegram бот, допустим с использованием библиотеки pyTelegramBotAPI.
 2. Скачиваем версию python 3.11.9 https://www.python.org/downloads/release/python-3119/
-3. fastapi (непонятна версия)
-
-4. Обработка слов: pymorphy2 (https://pymorphy2.readthedocs.io/en/stable/), nltk (https://www.nltk.org/)
+3. fastapi (последняя версия), думаю можно установить как fastapi[all]
+4. SQLAlchemy Admin
+5. Обработка слов: pymorphy2 (https://pymorphy2.readthedocs.io/en/stable/), nltk (https://www.nltk.org/)
 
 
 Административная часть:
