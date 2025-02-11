@@ -1,7 +1,10 @@
 from typing import Optional
 
+from dotenv import load_dotenv
 from pydantic import EmailStr
 from pydantic_settings import BaseSettings
+
+load_dotenv('.env')
 
 
 class Settings(BaseSettings):
@@ -20,3 +23,13 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def get_db_url():
+    if os.getenv('PSG', 'False').lower() == 'true':
+        return os.environ['DATABASE_PSG']
+    return os.environ['DATABASE_SQL']
+
+
+def get_auth_data():
+    return {"secret_key": settings.SECRET_KEY, "algorithm": settings.ALGORITHM}
