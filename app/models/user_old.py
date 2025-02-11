@@ -17,5 +17,5 @@ class User(Base):
     birthday = Column(DateTime, nullable=False)
     role = Column(Enum(Role), default=Role.USER, nullable=False)
     hashed_password = Column(String)
-    email = Column(String(50), nullable=False)  # Валидация email?
+    email = Column(String(50), nullable=False)  # Валидация email? EmailStr
     phone = Column(String(50), nullable=False)  # Валидация phone?
