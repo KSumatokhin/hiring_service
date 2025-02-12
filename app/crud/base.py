@@ -24,6 +24,16 @@ class CRUDBase:
         )
         return db_obj.scalars().first()
 
+    async def find_one_or_none(
+            self,
+            session: AsyncSession,
+            **filter_by,
+    ):
+        db_obj = await session.execute(
+            select(self.model).filter_by(**filter_by)
+        )
+        return db_obj.scalar_one_or_none()
+
     async def get_multi(
             self,
             session: AsyncSession

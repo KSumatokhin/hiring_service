@@ -6,7 +6,6 @@ from pydantic import (
     EmailStr,
     Extra,
     Field,
-    Date,
     PositiveInt,
     field_validator,
 )

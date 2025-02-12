@@ -9,14 +9,7 @@ from app.schemas.user import (
 )
 
 
-class CRUDUser(
-    CRUDBase[
-        User,
-        UserUpdate,
-        UserCreate,
-        AdminCreate,
-    ]
-):
+class CRUDUser(CRUDBase):
     pass
 
 

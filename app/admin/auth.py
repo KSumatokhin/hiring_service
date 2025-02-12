@@ -1,19 +1,24 @@
-from sqladmin import Admin
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
-from starlette.responses import RedirectResponse
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.exceptions import IncorrectEmailOrPasswordException
 from app.auth import create_access_token, verify_password
-from app.users.dao import UsersDAO
+from app.crud.user import user_crud
+from app.core.db import get_async_session
 
 
 class AdminAuth(AuthenticationBackend):
-    async def login(self, request: Request) -> bool:
+    async def login(
+        self,
+        request: Request,
+        # session: AsyncSession = Depends(get_async_session),
+    ) -> bool:
         form = await request.form()
         username, password = form["username"], form["password"]
-        user = await UsersDAO.find_one_or_none(first_name=username)
+        user = await user_crud.find_one_or_none(session=get_async_session(), name=username)
         if user is None:
             raise IncorrectEmailOrPasswordException
         verify = verify_password(
@@ -40,4 +45,4 @@ class AdminAuth(AuthenticationBackend):
         return True
 
 
-authentication_backend = AdminAuth(secret_key=settings.SECRET_KEY)
+authentication_backend = AdminAuth(secret_key=settings.secret)

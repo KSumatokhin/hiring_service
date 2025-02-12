@@ -2,8 +2,8 @@ from passlib.context import CryptContext
 from pydantic import EmailStr
 from jose import jwt
 from datetime import datetime, timedelta, timezone
-from app.config import get_auth_data
-from app.users.dao import UsersDAO
+from app.core.config import get_auth_data
+from app.crud.user import user_crud
 
 
 def create_access_token(data: dict) -> str:
@@ -27,7 +27,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 async def authenticate_user(email: EmailStr, password: str):
-    user = await UsersDAO.find_one_or_none(email=email)
+    user = await user_crud.find_one_or_none(email=email)
     if not user or verify_password(plain_password=password, hashed_password=user.password) is False:
         return None
     return user
