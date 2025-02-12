@@ -1,10 +1,15 @@
+import os
+from dotenv import load_dotenv
 from sqlalchemy import Column, Integer
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
 
-from app.core.config import settings
 
-database_url = settings.database_psg if settings.psg else settings.database_sql
+load_dotenv(".env")
+
+database_url = (
+    os.environ["DATABASE_SQL"] if os.environ["DEBUG"] else os.environ["DATABASE_PSG"]
+)
 
 
 class PreBase:
@@ -23,12 +28,6 @@ engine = create_async_engine(database_url)
 AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession)
 
 
-# Асинхронный генератор сессий.
 async def get_async_session():
-    # Через асинхронный контекстный менеджер и sessionmaker
-    # открывается сессия.
     async with AsyncSessionLocal() as async_session:
-        # Генератор с сессией передается в вызывающую функцию.
         yield async_session
-        # Когда HTTP-запрос отработает - выполнение кода вернётся сюда,
-        # и при выходе из контекстного менеджера сессия будет закрыта.

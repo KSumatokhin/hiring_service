@@ -1,3 +1,4 @@
+from datetime import date
 import re
 from typing import Optional
 from pydantic import (
@@ -5,7 +6,7 @@ from pydantic import (
     EmailStr,
     Extra,
     Field,
-    PastDate,
+    Date,
     PositiveInt,
     field_validator,
 )
@@ -18,6 +19,12 @@ class UserBase(BaseModel):
         max_length=100,
         description="Имя пользователя, от 2 до 100 знаков",
     )
+    surname: str = Field(
+        ...,
+        min_length=2,
+        max_length=100,
+        description="Фамилия пользователя, от 2 до 100",
+    )
     tg_id: PositiveInt = Field(
         ...,
         description="ID в Телеграме",
@@ -27,7 +34,7 @@ class UserBase(BaseModel):
         max_length=2048,
         description="Имя в Телеграме, до 2048 знаков",
     )
-    birthday: PastDate = Field(
+    birthday: date = Field(
         ...,
         description="Дата рождения",
     )
@@ -38,6 +45,14 @@ class UserBase(BaseModel):
     email: Optional[EmailStr] = Field(
         ...,
         description="Почта пользователя",
+    )
+    role_is_admin: bool = Field(
+        default=False,
+        description="Роль пользователя",
+    )
+    is_active: bool = Field(
+        default=True,
+        description="Активирован ли пользователь",
     )
 
     class Config:

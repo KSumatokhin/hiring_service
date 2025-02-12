@@ -12,14 +12,15 @@ from alembic import context
 from app.core.base import Base
 
 
+
 load_dotenv(".env")
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 
-PSG = os.getenv("PSG", "False").lower() == "true"
-DATABASE = os.environ["DATABASE_PSG"] if PSG else os.environ["DATABASE_SQL"]
+DATABASE = (os.environ["DATABASE_SQL"]
+            if os.environ["DEBUG"] else os.environ["DATABASE_PSG"])
 config.set_main_option("sqlalchemy.url", DATABASE)
 
 # Interpret the config file for Python logging.
