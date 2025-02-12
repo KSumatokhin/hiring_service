@@ -1,4 +1,1 @@
 Generic single-database configuration with an async dbapi.
-
-alembic revision --autogenerate -m "Add User model"
-alembic upgrade head

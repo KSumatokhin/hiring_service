@@ -1,35 +1,37 @@
-# from datetime import datetime
-
-# from fastapi_users.db import SQLAlchemyBaseUserTable
-# from sqlalchemy import Column, String, Date
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import Boolean, Integer, String
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    Column,
+    Date,
+    String,
+    BigInteger,
+)
 
 from app.core.db import Base
 
 
-# class User(SQLAlchemyBaseUserTable[int], Base):
-#     username = Column(String(20), nullable=False)
-#     surname = Column(String(50), nullable=True)
-#     tg_id = Column(String(1024), unique=True, nullable=False)
-#     tg_username = Column(String(50), unique=True, nullable=False)
-#     birthday = Column(Date, nullable=False)
-#     phone = Column(String(15), nullable=False)
-
-    # name: Mapped[str] = mapped_column(String(20), nullable=False)
-    # surname: Mapped[str] = mapped_column(String(50), nullable=False)
-    # tg_id: Mapped[str] = mapped_column(String(1024), nullable=False)
-    # tg_username: Mapped[str] = mapped_column(String(50), nullable=False)
-    # birthday: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    # phone: Mapped[str] = mapped_column(String(15), nullable=False)
-
 class User(Base):
+    name = Column(String(20), nullable=False)
+    surname = Column(String(50), nullable=True)
+    tg_id = Column(BigInteger, unique=True, nullable=False)
+    tg_username = Column(String(50), unique=True, nullable=False)
+    birthday = Column(Date, nullable=False)
+    role_is_admin = Column(Boolean, default=False, nullable=False)
+    password = Column(String, nullable=True)
+    email = Column(String(50), nullable=True)
+    phone = Column(String(50), nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False)
-    username: Mapped[str] = mapped_column(String(length=255), nullable=False)
-    hash_password: Mapped[str] = mapped_column(String(length=255), nullable=False)
-    is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    __table_args__ = (
+        CheckConstraint(
+            sqltext="tg_id > 0",
+            name="Positive tg_id",
+        ),
+        CheckConstraint(
+            sqltext="birthday < DATE('now')",
+            name="Birthday less now",
+        ),
+    )
 
-    def __str__(self):
-        return self.username
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}" f"{self.name=}" f"{self.tg_username}"
