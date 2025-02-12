@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     database_psg: str
     database_sql: str
     secret: str = "secret"
+    algorithm: str = 'HS256'
     first_superuser_email: Optional[EmailStr] = None
     first_superuser_password: Optional[str] = None
 
@@ -44,6 +45,6 @@ def get_db_url():
 
 def get_auth_data():
     return {
-        "secret_key": settings.SECRET_KEY,
-        "algorithm": settings.ALGORITHM,
+        "secret_key": settings.secret,
+        "algorithm": settings.algorithm,
     }
