@@ -27,10 +27,6 @@ class User(Base):
             sqltext="tg_id > 0",
             name="Positive tg_id",
         ),
-        CheckConstraint(
-            sqltext="birthday < DATE('now')",
-            name="Birthday less now",
-        ),
     )
 
     def __repr__(self) -> str:
