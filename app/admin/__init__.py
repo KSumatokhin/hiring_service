@@ -1,1 +1,1 @@
-from .user import UserAdmin
+from .admin import UserAdmin, KeywordAdmin, StopwordAdmin  # noqa

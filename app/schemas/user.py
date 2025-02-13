@@ -76,6 +76,10 @@ class AdminCreate(UserBase):
     )
 
 
+class UserRead(UserBase):
+    pass
+
+
 class UserCreate(UserBase):
     pass
 

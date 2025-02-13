@@ -11,7 +11,7 @@ from app.core.config import settings
 from app.core.db import engine
 from app.core.init_db import create_first_admin
 
-from app.admin import UserAdmin
+from app.admin import UserAdmin, KeywordAdmin, StopwordAdmin
 
 from app.admin.auth import authentication_backend
 
@@ -26,6 +26,8 @@ app = FastAPI(
 
 admin = Admin(app, engine, authentication_backend=authentication_backend)
 admin.add_view(UserAdmin)
+admin.add_view(KeywordAdmin)
+admin.add_view(StopwordAdmin)
 
 
 @app.on_event("startup")

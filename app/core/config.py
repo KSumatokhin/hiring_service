@@ -15,9 +15,7 @@ class Settings(BaseSettings):
     database_psg: str
     database_sql: str
     secret: str = "secret"
-    algorithm: str = 'HS256'
-    first_superuser_email: Optional[EmailStr] = None
-    first_superuser_password: Optional[str] = None
+    algorithm: str = "HS256"
 
     admin_name: str = None
     admin_surname: Optional[str] = None

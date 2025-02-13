@@ -1,16 +1,18 @@
 import os
+
 from dotenv import load_dotenv
 from sqlalchemy import Column, Integer
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
 from async_generator import asynccontextmanager
 
-
 load_dotenv(".env")
 
 database_url = (
     os.environ["DATABASE_SQL"] if os.environ["DEBUG"] else os.environ["DATABASE_PSG"]
 )
+
+MAX_LENGHT = 50
 
 
 class PreBase:
