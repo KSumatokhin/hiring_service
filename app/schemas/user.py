@@ -3,8 +3,8 @@ import re
 from typing import Optional
 from pydantic import (
     BaseModel,
+    ConfigDict,
     EmailStr,
-    Extra,
     Field,
     PositiveInt,
     field_validator,
@@ -12,6 +12,7 @@ from pydantic import (
 
 
 class UserBase(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     name: str = Field(
         ...,
         min_length=2,
@@ -53,9 +54,6 @@ class UserBase(BaseModel):
         default=True,
         description="Активирован ли пользователь",
     )
-
-    class Config:
-        extra = Extra.forbid
 
     @field_validator("phone")
     @classmethod

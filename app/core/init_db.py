@@ -5,7 +5,7 @@ from pydantic import EmailStr
 from sqlalchemy.engine import create
 
 from app.core.config import settings
-from app.core.db import get_async_session
+from app.core.db import AsyncSessionLocal
 from app.models.user import User
 from app.schemas.user import AdminCreate
 
@@ -20,7 +20,7 @@ async def create_user(
     email: Optional[EmailStr],
     phone: Optional[str],
 ):
-    with get_async_session() as session:
+    with AsyncSessionLocal as session:
         print("Проверка на наличие пользователей в базе данных")
         users = session.execute(select(User))
         if bool(users) is False:

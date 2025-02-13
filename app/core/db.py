@@ -38,3 +38,4 @@ async def get_async_session():
 async def async_session_manager():
     async with AsyncSessionLocal() as async_session:
         yield async_session
+
