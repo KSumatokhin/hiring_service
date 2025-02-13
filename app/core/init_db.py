@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import Optional
-from sqlalchemy import select
+
+from passlib.context import CryptContext
 from pydantic import EmailStr
-from sqlalchemy.engine import create
+from sqlalchemy import select
 
 from app.core.config import settings
-from app.core.db import get_async_session
+from app.core.db import AsyncSessionLocal
 from app.models.user import User
-from app.schemas.user import AdminCreate
 
 
 async def create_user(
@@ -15,31 +15,35 @@ async def create_user(
     surname: Optional[str],
     tg_id: int,
     tg_username: str,
-    birthday: datetime.date,
+    birthday: datetime,
     password: str,
     email: Optional[EmailStr],
     phone: Optional[str],
 ):
-    with get_async_session() as session:
-        print("Проверка на наличие пользователей в базе данных")
-        users = session.execute(select(User))
-        if bool(users) is False:
-            await session.execute(
-                create(
-                    AdminCreate(
-                        name=name,
-                        surname=surname,
-                        tg_id=tg_id,
-                        tg_username=tg_username,
-                        birthday=birthday,
-                        password=password,
-                        email=email,
-                        phone=phone,
-                        role_is_admin=True,
-                        is_active=True,
-                    )
-                )
+
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    hashed_password = pwd_context.hash(password)
+
+    async with AsyncSessionLocal() as session:
+        users = await session.execute(select(User))
+        if users.first() is None:
+            admin_user = dict(
+                name=name,
+                surname=surname,
+                tg_id=tg_id,
+                tg_username=tg_username,
+                birthday=birthday,
+                password=hashed_password,
+                email=email,
+                phone=phone,
+                role_is_admin=True,
+                is_active=True,
             )
+            db_user = User(**admin_user)
+            session.add(db_user)
+            await session.commit()
+            await session.refresh(db_user)
+            print("Создан первый администратор!")
 
 
 async def create_first_admin():
