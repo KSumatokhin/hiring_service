@@ -4,7 +4,7 @@ from fastapi import FastAPI
 # from sqladmin import Admin, ModelView
 from sqladmin import Admin
 
-# from app.api.routers import main_router
+from app.api.routers import main_router
 
 # from app.auth import get_password_hash
 from app.core.config import settings
@@ -21,7 +21,7 @@ app = FastAPI(
     description=settings.app_description,
 )
 
-# app.include_router(main_router)
+app.include_router(main_router)
 
 
 admin = Admin(app, engine, authentication_backend=authentication_backend)

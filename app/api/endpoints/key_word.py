@@ -10,7 +10,7 @@ from app.api.validators import (
     check_word_exists,
 )
 from app.core.db import get_async_session
-from app.core.user import current_superuser
+# from app.core.user import current_superuser
 from app.crud import key_word_crud
 from app.schemas.key_word import (
     KeyWordsCreateList,
@@ -38,7 +38,7 @@ async def get_all_keywords(
 @router.post(
     '/',
     response_model=KeywordDB,
-    dependencies=[Depends(current_superuser)],
+    # dependencies=[Depends(current_superuser)],
 )
 async def create_new_key_word(
     key_word: KeywordCreate,
@@ -59,7 +59,7 @@ async def create_new_key_word(
 
 @router.post(
         '/batch', response_model=list[KeywordDB],
-        dependencies=[Depends(current_superuser)]
+        # dependencies=[Depends(current_superuser)]
     )
 async def create_key_words_batch(
     words_in: KeyWordsCreateList,
@@ -88,7 +88,7 @@ async def create_key_words_batch(
 @router.delete(
     '/{key_word}',
     response_model=KeywordDB,
-    dependencies=[Depends(current_superuser)],
+    # dependencies=[Depends(current_superuser)],
 )
 async def remove_key_word(
     key_word: str,
@@ -103,7 +103,7 @@ async def remove_key_word(
 
 @router.post(
         '/upload-file', response_model=list[KeywordDB],
-        dependencies=[Depends(current_superuser)]
+        # dependencies=[Depends(current_superuser)]
     )
 async def upload_key_words_file(
     file: UploadFile = File(...),

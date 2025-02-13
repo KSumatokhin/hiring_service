@@ -81,3 +81,35 @@ class CRUDBase:
         await session.delete(db_obj)
         await session.commit()
         return db_obj
+
+    async def get_id_by_word(
+        self,
+        word: str,
+        session: AsyncSession,
+    ):
+        """Получение id одного объекта по слову."""
+        db_obj_id = await session.execute(
+            select(self.model.id).where(self.model.word == word)
+        )
+        return db_obj_id.scalars().first() or None
+
+    async def get_all_words(self, session: AsyncSession):
+        """Получение всех объектов."""
+        db_objs_word = await session.execute(select(self.model.word))
+        return db_objs_word.scalars().all()
+
+    async def create_multi(
+        self, objects_in: list, session: AsyncSession
+    ):
+        """Создание объектов."""
+        db_obj_list = []
+        for obj_in in objects_in:
+            obj_in_data = obj_in.dict()
+            db_obj = self.model(**obj_in_data)
+            db_obj_list.append(db_obj)
+        session.add_all(db_obj_list)
+        await session.commit()
+
+        for obj in db_obj_list:
+            await session.refresh(obj)
+        return db_obj_list

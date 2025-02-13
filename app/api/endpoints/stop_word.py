@@ -8,7 +8,7 @@ from app.api.validators import (
     check_word_exists
 )
 from app.core.db import get_async_session
-from app.core.user import current_superuser
+# from app.core.user import current_superuser
 from app.crud import stop_word_crud
 from app.models.stop_word import Stopword
 from app.schemas.stop_word import (
@@ -34,7 +34,7 @@ async def get_all_stop_words(
 @router.post(
     '/',
     response_model=StopwordDB,
-    dependencies=[Depends(current_superuser)],
+    # dependencies=[Depends(current_superuser)],
 )
 async def create_new_stop_word(
     stop_word: StopwordCreate,
@@ -55,7 +55,7 @@ async def create_new_stop_word(
 
 @router.post(
         '/batch', response_model=list[StopwordDB],
-        dependencies=[Depends(current_superuser)]
+        # dependencies=[Depends(current_superuser)]
     )
 async def create_stop_words_batch(
     words_in: StopWordsCreateList,
@@ -83,7 +83,7 @@ async def create_stop_words_batch(
 
 @router.post(
         '/upload-file', response_model=list[StopwordDB],
-        dependencies=[Depends(current_superuser)]
+        # dependencies=[Depends(current_superuser)]
     )
 async def upload_stop_words_file(
     file: UploadFile = File(...),
@@ -116,7 +116,7 @@ async def upload_stop_words_file(
 @router.delete(
     '/{stop_word}',
     response_model=StopwordDB,
-    dependencies=[Depends(current_superuser)],
+    # dependencies=[Depends(current_superuser)],
 )
 async def remove_stop_word(
     stop_word: str,

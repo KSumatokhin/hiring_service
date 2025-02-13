@@ -1,30 +1,38 @@
 from sqladmin import ModelView
 
-# from app.core.db import engine
+from app.auth import get_password_hash
+from app.exceptions import IncorrectEmailOrPasswordException
 from app.models import User
-
-# from app.main import app
 
 
 class UserAdmin(ModelView, model=User):
-    column_list = [User.id, User.name]
+    column_list = [User.id, User.name, User.surname, User.tg_username]
     form_create_rules = [
-        "name",
-        "surname",
-        "phone_number",
-        "email",
-        "password",
+        'name',
+        'surname',
+        'tg_id',
+        'tg_username',
+        'birthday',
+        'role_is_admin',
+        'password',
+        'email',
+        'phone',
     ]
     form_edit_rules = [
-        "first_name",
-        "last_name",
-        "phone_number",
-        "email",
+        'name',
+        'surname',
+        'phone',
+        'email',
+        'is_active',
     ]
 
     async def on_model_change(self, data, model, is_created, request) -> None:
         if is_created:
-            password = data["password"]
-            # Hash the password before saving into DB !
-            data["password"] = get_password_hash(password=password)
-
+            admin = data.get('role_is_admin')
+            password = data.get('password', None)
+            if admin and password != '':
+                data['password'] = get_password_hash(password=password)
+            elif admin and password == '':
+                raise IncorrectEmailOrPasswordException
+            else:
+                data['password'] = ''
