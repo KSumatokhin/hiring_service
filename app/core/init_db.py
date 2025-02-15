@@ -67,3 +67,6 @@ async def create_first_admin():
             email=settings.admin_email,
             phone=settings.admin_phone,
         )
+
+
+# Можно скопировать из Яндекс Практикума, теперь добавил fastapi-users!
