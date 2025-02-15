@@ -1,48 +1,66 @@
+import contextlib
+from typing import Optional
+
+from fastapi import Request
+from fastapi.security import OAuth2PasswordRequestForm
 from sqladmin.authentication import AuthenticationBackend
-from starlette.requests import Request
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.exceptions import IncorrectEmailOrPasswordException
-from app.auth import create_access_token, verify_password
-from app.crud.user import user_crud
-from app.core.db import async_session_manager
+from app.crud.user import UserManager, get_user_db, get_jwt_strategy
+from app.core.db import get_async_session
+from app.models import User
 
 
 class AdminAuth(AuthenticationBackend):
-    async def login(
-        self,
-        request: Request,
-    ) -> bool:
-        async with async_session_manager() as session:
-            form = await request.form()
-            username, password = form["username"], form["password"]
-            user = await user_crud.find_one_or_none(session=session, name=username)
-            if user is None:
-                raise IncorrectEmailOrPasswordException
-            verify = verify_password(
-                plain_password=password, hashed_password=user.password
-            )
-            if not user or verify is False:
-                return False
-            access_token = create_access_token({"sub": str(user.id)})
-            request.session.update({"token": access_token})
+    def __init__(self):
+        super().__init__(settings.secret)
+        self.jwt_strategy = get_jwt_strategy()
+
+    @contextlib.asynccontextmanager
+    async def get_user_manager(self):
+        async for session in get_async_session():
+            async for user_db in get_user_db(session):
+                yield UserManager(user_db)
+
+    async def authenticate_user(
+        self, username: str, password: str
+    ) -> Optional[User]:
+        async with self.get_user_manager() as user_manager:
+            credentials = OAuth2PasswordRequestForm(
+                username=username, password=password)
+            user = await user_manager.authenticate(credentials)
+            if user and user.is_active:
+                token = await self.jwt_strategy.write_token(user)
+                return user, token
+            return None, None
+
+    async def login(self, request: Request):
+        form = await request.form()
+        username = form["username"]
+        password = form["password"]
+
+        user, token = await self.authenticate_user(username, password)
+        if user and user.is_superuser:
+            request.session.update({"access_token": token})
             return True
+        return False
 
     async def logout(self, request: Request) -> bool:
-        # Usually you'd want to just clear the session
         request.session.clear()
         return True
 
     async def authenticate(self, request: Request) -> bool:
-        token = request.session.get("token")
-
+        token = request.session.get("access_token")
         if not token:
             return False
-
-        # Check the token in depth
-        return True
-
-
-authentication_backend = AdminAuth(secret_key=settings.secret)
+        try:
+            async with self.get_user_manager() as user_manager:
+                user = await self.jwt_strategy.read_token(token, user_manager)
+                if user is None:
+                    return False
+                if user and user.is_superuser:
+                    return True
+                else:
+                    return False
+        except Exception:
+            return False

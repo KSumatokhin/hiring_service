@@ -1,45 +1,44 @@
+import contextlib
+
 from sqladmin import ModelView
 
-from app.auth import get_password_hash
 from app.exceptions import IncorrectEmailOrPasswordException
 from app.models import Keyword, Stopword, User
+from app.crud.user import UserManager, get_user_db
+from app.core.db import get_async_session
+from app.schemas.user import UserCreate
 
 
 class UserAdmin(ModelView, model=User):
+    column_list = [User.first_name, User.last_name, User.tg_username]
     name = "Пользователь"
     name_plural = "Пользователи"
     icon = "fa-solid fa-user"
     category = "accounts"
-    column_list = [User.name, User.surname, User.tg_username]
+    column_labels = {"hashed_password": "password"}
     form_create_rules = [
-        'name',
-        'surname',
-        'tg_id',
-        'tg_username',
-        'birthday',
-        'role_is_admin',
-        'password',
-        'email',
-        'phone',
+        "first_name",
+        "last_name",
+        "tg_id",
+        "tg_username",
+        "birthday",
+        "phone",
+        "email",
+        "hashed_password",
     ]
-    form_edit_rules = [
-        'name',
-        'surname',
-        'phone',
-        'email',
-        'is_active',
-    ]
+
+    @contextlib.asynccontextmanager
+    async def get_user_manager(self):
+        async for session in get_async_session():
+            async for user_db in get_user_db(session):
+                yield UserManager(user_db)
 
     async def on_model_change(self, data, model, is_created, request) -> None:
         if is_created:
-            admin = data.get('role_is_admin')
-            password = data.get('password', None)
-            if admin and password != '':
-                data['password'] = get_password_hash(password=password)
-            elif admin and password == '':
-                raise IncorrectEmailOrPasswordException
-            else:
-                data['password'] = ''
+            async with self.get_user_manager() as user_manager:
+                data['password'] = data['hashed_password']
+                data.pop('hashed_password')
+                await user_manager.create(UserCreate(**data))
 
 
 class KeywordAdmin(ModelView, model=Keyword):
