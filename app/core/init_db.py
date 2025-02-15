@@ -7,12 +7,12 @@ from sqlalchemy import select
 
 from app.core.config import settings
 from app.core.db import AsyncSessionLocal
-from app.models.user import User
+from app.models import User
 
 
 async def create_user(
-    name: str,
-    surname: Optional[str],
+    first_name: str,
+    last_name: Optional[str],
     tg_id: int,
     tg_username: str,
     birthday: datetime,
@@ -28,15 +28,15 @@ async def create_user(
         users = await session.execute(select(User))
         if users.first() is None:
             admin_user = dict(
-                name=name,
-                surname=surname,
+                first_name=first_name,
+                last_name=last_name,
                 tg_id=tg_id,
                 tg_username=tg_username,
                 birthday=birthday,
-                password=hashed_password,
+                hashed_password=hashed_password,
                 email=email,
                 phone=phone,
-                role_is_admin=True,
+                is_superuser=True,
                 is_active=True,
             )
             db_user = User(**admin_user)
@@ -48,18 +48,18 @@ async def create_user(
 
 async def create_first_admin():
     if (
-        settings.admin_name is not None
-        and settings.admin_surname is not None
-        and settings.admin_tg_id is not None
-        and settings.admin_tg_username is not None
-        and settings.admin_birthday is not None
-        and settings.admin_password is not None
-        and settings.admin_email is not None
-        and settings.admin_phone is not None
+        settings.admin_name is not None and
+        settings.admin_surname is not None and
+        settings.admin_tg_id is not None and
+        settings.admin_tg_username is not None and
+        settings.admin_birthday is not None and
+        settings.admin_password is not None and
+        settings.admin_email is not None and
+        settings.admin_phone is not None
     ):
         await create_user(
-            name=settings.admin_name,
-            surname=settings.admin_surname,
+            first_name=settings.admin_name,
+            last_name=settings.admin_surname,
             tg_id=settings.admin_tg_id,
             tg_username=settings.admin_tg_username,
             birthday=datetime.strptime(settings.admin_birthday, "%Y-%m-%d"),
