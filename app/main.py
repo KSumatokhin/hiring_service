@@ -39,4 +39,5 @@ templates = Jinja2Templates(directory="app/templates")
 
 @app.get(path="/admin/login", response_class=HTMLResponse)
 async def login(request: Request):
+    print("kaka")
     return templates.TemplateResponse("login.html", {"request": request})
