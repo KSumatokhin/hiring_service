@@ -29,6 +29,7 @@ admin = Admin(app, engine, authentication_backend=AdminAuth())
 admin.add_view(UserAdmin)
 admin.add_view(KeywordAdmin)
 admin.add_view(StopwordAdmin)
+# admin.add_route("/admin/your_model/upload_csv/", upload_csv, methods=["POST"])
 
 
 @app.on_event("startup")

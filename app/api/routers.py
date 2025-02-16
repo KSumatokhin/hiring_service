@@ -6,6 +6,7 @@ from app.api.endpoints import (
     stop_word_router,
     user_router,
 )
+from app.admin.views import router as admin_router
 
 main_router = APIRouter()
 main_router.include_router(
@@ -16,3 +17,4 @@ main_router.include_router(
 main_router.include_router(stop_word_router, prefix="/stop_word", tags=["Стоп-слова"])
 main_router.include_router(text_router, prefix="/analyze", tags=["Анализ текста"])
 main_router.include_router(user_router)
+main_router.include_router(admin_router)

@@ -11,20 +11,20 @@ from app.schemas.user import UserCreate
 
 class UserAdmin(ModelView, model=User):
     column_list = [User.first_name, User.last_name, User.tg_username]
-    name = "Пользователь"
-    name_plural = "Пользователи"
-    icon = "fa-solid fa-user"
-    category = "accounts"
-    column_labels = {"hashed_password": "password"}
+    name = 'Пользователь'
+    name_plural = 'Пользователи'
+    icon = 'fa-solid fa-user'
+    category = 'accounts'
+    column_labels = {'hashed_password': 'password'}
     form_create_rules = [
-        "first_name",
-        "last_name",
-        "tg_id",
-        "tg_username",
-        "birthday",
-        "phone",
-        "email",
-        "hashed_password",
+        'first_name',
+        'last_name',
+        'tg_id',
+        'tg_username',
+        'birthday',
+        'phone',
+        'email',
+        'hashed_password',
     ]
 
     @contextlib.asynccontextmanager
@@ -42,20 +42,21 @@ class UserAdmin(ModelView, model=User):
 
 
 class KeywordAdmin(ModelView, model=Keyword):
+    list_template = 'sqladmin/custom_list.html'
     column_list = [Keyword.id, Keyword.word]
-    name = "Ключевое слово"
-    name_plural = "Ключевые слова"
-    icon = "fa-solid fa-file-text"
-    category = "keywords"
+    name = 'Ключевое слово'
+    name_plural = 'Ключевые слова'
+    icon = 'fa-solid fa-file-text'
+    category = 'keywords'
     column_searchable_list = [Keyword.word]
     column_sortable_list = [Keyword.word]
 
 
 class StopwordAdmin(ModelView, model=Stopword):
     column_list = [Stopword.id, Stopword.word]
-    name = "Стоп-слово"
-    name_plural = "Стоп-слова"
-    icon = "fa-solid fa-file-text"
-    category = "stopwords"
+    name = 'Стоп-слово'
+    name_plural = 'Стоп-слова'
+    icon = 'fa-solid fa-file-text'
+    category = 'stopwords'
     column_searchable_list = [Stopword.word]
     column_sortable_list = [Stopword.word]
