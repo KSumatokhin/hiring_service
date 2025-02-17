@@ -1,9 +1,9 @@
-from typing import Optional, Union
+from typing import Optional
 
-from fastapi import Depends, Request
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_users import (
-    BaseUserManager, FastAPIUsers, IntegerIDMixin, InvalidPasswordException
+    BaseUserManager, FastAPIUsers, IntegerIDMixin
 )
 from fastapi_users.authentication import (
     AuthenticationBackend, BearerTransport, JWTStrategy
@@ -16,7 +16,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.db import get_async_session
 from app.models import User
-from app.schemas.user import UserCreate
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
