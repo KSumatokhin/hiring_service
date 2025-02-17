@@ -30,4 +30,10 @@ async def upload_csv(
         await session.commit()
         await session.refresh(obj)
     # Перенаправляем обратно в админку
-    return RedirectResponse(url=request.url_for("admin:list", identity="keyword"), status_code=303)
+    return RedirectResponse(
+        url=request.url_for(
+            "admin:list",
+            identity="keyword"
+        ),
+        status_code=303
+    )
