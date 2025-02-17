@@ -25,10 +25,16 @@ class Settings(BaseSettings):
     admin_password: str = None
     admin_email: Optional[str] = None
     admin_phone: Optional[str] = None
+    
+    base_site: str
 
     class Config:
         env_file = ".env"
         extra = "ignore"
+    
+    def get_webhook_url(self) -> str:
+        """Возвращает URL вебхука с кодированием специальных символов."""
+        return f"{self.base_site}/webhook"
 
 
 settings = Settings()

@@ -14,7 +14,7 @@ class UserAdmin(ModelView, model=User):
     name = 'Пользователь'
     name_plural = 'Пользователи'
     icon = 'fa-solid fa-user'
-    category = 'accounts'
+    # category = 'accounts'
     column_labels = {'hashed_password': 'password'}
     form_create_rules = [
         'first_name',
@@ -47,7 +47,7 @@ class KeywordAdmin(ModelView, model=Keyword):
     name = 'Ключевое слово'
     name_plural = 'Ключевые слова'
     icon = 'fa-solid fa-file-text'
-    category = 'keywords'
+    # category = 'keywords'
     column_searchable_list = [Keyword.word]
     column_sortable_list = [Keyword.word]
 
@@ -57,6 +57,6 @@ class StopwordAdmin(ModelView, model=Stopword):
     name = 'Стоп-слово'
     name_plural = 'Стоп-слова'
     icon = 'fa-solid fa-file-text'
-    category = 'stopwords'
+    # category = 'stopwords'
     column_searchable_list = [Stopword.word]
     column_sortable_list = [Stopword.word]
