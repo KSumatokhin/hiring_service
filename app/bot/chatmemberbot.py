@@ -25,8 +25,11 @@ from telegram.ext import (
     filters,
 )
 
+<<<<<<< HEAD
 from conf import TOKEN
 
+=======
+>>>>>>> 961cac7361f469821e2b247f4917996cfb95d043
 # Enable logging
 
 logging.basicConfig(
@@ -159,7 +162,11 @@ async def start_private_chat(update: Update, context: ContextTypes.DEFAULT_TYPE)
 def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token.
+<<<<<<< HEAD
     application = Application.builder().token(TOKEN).build()
+=======
+    application = Application.builder().token("TOKEN").build()
+>>>>>>> 961cac7361f469821e2b247f4917996cfb95d043
 
     # Keep track of which chats the bot is in
     application.add_handler(ChatMemberHandler(track_chats, ChatMemberHandler.MY_CHAT_MEMBER))

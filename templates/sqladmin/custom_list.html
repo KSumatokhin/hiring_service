@@ -41,14 +41,11 @@
         {% if model_view.can_create %}
         <div class="ms-3 d-inline-block">
 
-          <form action="{{ url_for('upload_csv') }}" enctype="multipart/form-data" method="post">
+          <form id="upload_csv" action="{{ url_for('upload_csv') }}" enctype="multipart/form-data" method="post">
             <label for="file-upload" class="btn btn-primary">
                 Выбрать файл
             </label>
             <input id="file-upload" type="file" name="file" accept=".csv" style="display: none;" required>
-            <button type="submit" class="btn btn-success">
-              Подтвердить
-            </button>
           </form>
         </div>
 
@@ -237,4 +234,12 @@
   {% endif %}
   {% endfor %}
 </div>
+
+<!-- JavaScript для кнопки Выбрать Файл -->
+<script>
+  document.getElementById("file-upload").onchange = function(){
+    document.getElementById("upload_csv").submit()
+  }
+</script>
+
 {% endblock %}
