@@ -15,3 +15,5 @@ dmypy.json
 venv
 copybook
 __sprint
+
+*.env
